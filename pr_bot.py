@@ -28,7 +28,7 @@ def get_pr_diff():
 def generate_description(diff: str) -> str:
     """Send diff to Gemini and get back a structured PR description."""
     genai.configure(api_key=GEMINI_API_KEY)
-    model = genai.GenerativeModel("gemini-1.5-flash")  # free tier
+    model = genai.GenerativeModel("gemini-3.6-flash")  # free tier
 
     # Trim diff if too large (Gemini has a context limit)
     if len(diff) > 30000:
