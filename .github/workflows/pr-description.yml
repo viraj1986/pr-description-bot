@@ -1,0 +1,35 @@
+name: PR Description Bot
+
+on:
+  pull_request:
+    types: [opened]          # only fires when PR is first opened
+
+jobs:
+  generate-description:
+    runs-on: ubuntu-latest
+    
+    # Required permissions to post comments
+    permissions:
+      pull-requests: write
+      contents: read
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run PR description bot
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}     # auto-provided by GitHub
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }} # the one you added in Step 3
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: python pr_bot.py
